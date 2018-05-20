@@ -1,5 +1,5 @@
 set -ex
-. ./.buildenv.sh
+. ./.buildenv-arm.sh
 
-$CC -o test $CFLAGS test.c
+$CC -o xtest $CFLAGS test.c
 

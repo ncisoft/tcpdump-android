@@ -45,4 +45,5 @@ src/bin/*
 ./build/*
 ./.vs/*
 
-*buildenv.sh
+.buildenv*.sh
+toolchain/*

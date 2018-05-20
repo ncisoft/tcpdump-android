@@ -16,12 +16,13 @@
 
 # default, edit versions
 android_api_def=21
-toolchain=x86-4.9
+toolchain=arm-linux-androideabi-4.9
 topdir=$(pwd)
-buildenv_sh=$topdir/.buildenv-x86.sh
+buildenv_sh=$topdir/.buildenv-arm.sh
 
 
 ndk_dir_def=android-ndk-r10e
+set -e 
 
 #-------------------------------------------------------#
 
@@ -84,26 +85,23 @@ exit_error()
 	echo "| CREATING TOOLCHAIN |"
 	echo "|____________________|"
 
-	if [ -d toolchain ]
+	if [ -d arm ]
 	then
 		echo Toolchain already exist! Nothing to do.
 	else
 		echo Creating toolchain... ${toolchain}
-		mkdir x86
-		bash ${ndk_dir}/build/tools/make-standalone-toolchain.sh    \
-		--arch=x86 --toolchain=${toolchain} \
-		--platform=android-${android_api} \
-		--install-dir=x86
+		mkdir arm
+		bash ${ndk_dir}/build/tools/make-standalone-toolchain.sh    --toolchain=${toolchain} --platform=android-${android_api} --install-dir=arm
 		
 		if [ $? -ne 0 ]
 		then
-			rm -fr x86
+			rm -fr arm
 			exit_error
 		fi
 	fi
 
         echo "..."
-        cross=$(find $topdir/toolchain/x86 -name "*-gcc" |awk -F '/' \
+        cross=$(find $topdir/toolchain/arm/ -name "*-gcc" |awk -F '/' \
           '{printf("%s\n", $(NF))}' | sed -e 's/-gcc//' \
           )
         echo   export CC=${cross}-gcc > $buildenv_sh
@@ -114,7 +112,7 @@ exit_error()
 	echo   export AR=${cross}-ar >> $buildenv_sh
 	echo   export LD=${cross}-ld >> $buildenv_sh
 	echo   export STRIPE=${cross}-stripe >> $buildenv_sh
-	echo   export PATH=`pwd`/toolchain/bin:$PATH >> $buildenv_sh
+	echo   export PATH=`pwd`/arm/bin:$PATH >> $buildenv_sh
 }
 
 
